@@ -62,8 +62,6 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
     // User modules
     private final IMessageRecipient messageRecipient;
     private transient final AsyncTeleport teleport;
-    @SuppressWarnings("deprecation")
-    private transient final Teleport legacyTeleport;
 
     // User command confirmation strings
     private final Map<User, BigDecimal> confirmingPayments = new WeakHashMap<>();
@@ -107,8 +105,6 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
     public User(final Player base, final IEssentials ess) {
         super(base, ess);
         teleport = new AsyncTeleport(this, ess);
-        //noinspection deprecation
-        legacyTeleport = new Teleport(this, ess);
         if (isAfk()) {
             afkPosition = this.getLocation();
         }
@@ -565,16 +561,6 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
         return teleport;
     }
 
-    /**
-     * @deprecated This API is not asynchronous. Use {@link User#getAsyncTeleport()}
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    @Deprecated
-    public Teleport getTeleport() {
-        return legacyTeleport;
-    }
-
     public long getLastOnlineActivity() {
         return lastOnlineActivity;
     }
@@ -827,8 +813,7 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
 
     public void updateActivityOnChat(final boolean broadcast) {
         if (ess.getSettings().cancelAfkOnChat()) {
-            //Chat happens async, make sure we have a sync context
-            ess.scheduleSyncDelayedTask(() -> updateActivity(broadcast, AfkStatusChangeEvent.Cause.CHAT));
+            ess.scheduleEntityDelayedTask(base, () -> updateActivity(broadcast, AfkStatusChangeEvent.Cause.CHAT));
         }
     }
 
@@ -1062,11 +1047,6 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
         if (!message.isEmpty()) {
             base.sendMessage(message);
         }
-    }
-
-    @Override
-    public void sendComponent(ComponentLike component) {
-        ess.getBukkitAudience().player(base).sendMessage(component);
     }
 
     @Override

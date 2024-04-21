@@ -750,9 +750,10 @@ public class Commandessentials extends EssentialsCommand {
             serverMessageKey = "versionOutputWarn";
         }
 
-        sender.sendTl(serverMessageKey, "Server", server.getBukkitVersion() + " " + server.getVersion());
-        sender.sendTl(serverMessageKey, "Brand", server.getName());
-        sender.sendTl("versionOutputFine", "EssentialsX", essVer);
+        sender.sendMessage(tlLiteral(serverMessageKey, "Server", server.getBukkitVersion() + " " + server.getVersion()));
+        sender.sendMessage(tlLiteral(serverMessageKey, "Brand", server.getName()));
+        sender.sendMessage(tlLiteral("versionOutputFlags", "FOLIA:" + VersionUtil.FOLIA + ",FLAT:" + VersionUtil.PRE_FLATTENING + ",SUPSTAT:" + VersionUtil.getServerSupportStatus().name()));
+        sender.sendMessage(tlLiteral("versionOutputFine", "EssentialsX", essVer));
 
         for (final Plugin plugin : pm.getPlugins()) {
             final PluginDescriptionFile desc = plugin.getDescription();
