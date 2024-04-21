@@ -1,7 +1,7 @@
 package com.earth2me.essentials;
 
 import com.earth2me.essentials.utils.AdventureUtil;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class CommandSource {
 
         final String translation = tlLiteral(tlKey, args);
         if (!translation.isEmpty()) {
-            sendComponent(AdventureUtil.miniMessage().deserialize(translation));
+            BukkitComponentSerializer.gson().serialize(AdventureUtil.miniMessage().deserialize(translation));
         }
     }
 
@@ -59,8 +59,7 @@ public class CommandSource {
     }
 
     public void sendComponent(final Component component) {
-        final BukkitAudiences audiences = ess.getBukkitAudience();
-        audiences.sender(sender).sendMessage(component);
+        sender.sendMessage(BukkitComponentSerializer.gson().serialize(component));
     }
 
     public final net.ess3.api.IUser getUser() {

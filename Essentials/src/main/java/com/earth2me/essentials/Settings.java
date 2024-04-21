@@ -796,7 +796,7 @@ public class Settings implements net.ess3.api.ISettings {
         worldAliases = _getWorldAliases();
         primaryColor = _getPrimaryColor();
         secondaryColor = _getSecondaryColor();
-        isNickCheckPattentMatch =
+        isNickCheckPattentMatch = _isNickCheckPatternMatch();
 
         reloadCount.incrementAndGet();
     }
@@ -1964,6 +1964,10 @@ public class Settings implements net.ess3.api.ISettings {
 
     @Override
     public boolean isNickCheckPatternMatch() {
+        return isNickCheckPattentMatch;
+    }
+
+    private boolean _isNickCheckPatternMatch() {
         return config.getBoolean("nick-check-pattern-match", true);
     }
 
