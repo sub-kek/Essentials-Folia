@@ -145,6 +145,7 @@ public class Settings implements net.ess3.api.ISettings {
     private Map<String, String> worldAliases;
     private Tag primaryColor = DEFAULT_PRIMARY_COLOR;
     private Tag secondaryColor = DEFAULT_SECONDARY_COLOR;
+    private boolean isNickCheckPattentMatch;
 
     public Settings(final IEssentials ess) {
         this.ess = ess;
@@ -795,6 +796,7 @@ public class Settings implements net.ess3.api.ISettings {
         worldAliases = _getWorldAliases();
         primaryColor = _getPrimaryColor();
         secondaryColor = _getSecondaryColor();
+        isNickCheckPattentMatch =
 
         reloadCount.incrementAndGet();
     }
@@ -1958,6 +1960,11 @@ public class Settings implements net.ess3.api.ISettings {
     @Override
     public boolean isUpdateCheckEnabled() {
         return config.getBoolean("update-check", true);
+    }
+
+    @Override
+    public boolean isNickCheckPatternMatch() {
+        return config.getBoolean("nick-check-pattern-match", true);
     }
 
     @Override
