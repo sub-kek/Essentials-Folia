@@ -108,6 +108,7 @@ import net.ess3.provider.providers.PaperSerializationProvider;
 import net.ess3.provider.providers.PaperServerStateProvider;
 import net.essentialsx.api.v2.services.BalanceTop;
 import net.essentialsx.api.v2.services.mail.MailService;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -208,6 +209,7 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     private transient Kits kits;
     private transient RandomTeleport randomTeleport;
     private transient UpdateChecker updateChecker;
+    private transient BukkitAudiences bukkitAudience;
 
     static {
         EconomyLayers.init();
@@ -256,6 +258,7 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
         jails = new Jails(this);
         registerListeners(server.getPluginManager());
         kits = new Kits(this);
+        bukkitAudience = BukkitAudiences.create(this);
     }
 
     @Override
@@ -563,6 +566,8 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     }
 
     private void registerListeners(final PluginManager pm) {
+        HandlerList.unregisterAll(this);
+
         if (getSettings().isDebug()) {
             LOGGER.log(Level.INFO, "Registering Listeners");
         }
@@ -651,6 +656,11 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     public void reload() {
         Trade.closeLog();
 
+        if (bukkitAudience != null) {
+            bukkitAudience.close();
+            bukkitAudience = null;
+        }
+
         for (final IConf iConf : confList) {
             iConf.reloadConfig();
             execTimer.mark("Reload(" + iConf.getClass().getSimpleName() + ")");
@@ -669,6 +679,7 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
         registerListeners(pm);
 
         AdventureUtil.setEss(this);
+        bukkitAudience = BukkitAudiences.create(this);
     }
 
     private IEssentialsCommand loadCommand(final String path, final String name, final IEssentialsModule module, final ClassLoader classLoader) throws Exception {
@@ -1293,8 +1304,8 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     }
 
     @Override
-    public void scheduleGlobalDelayedTask(Runnable run, long delay) {
-        schedulingProvider.runGlobalLocationalTask(run, delay);
+    public SchedulingProvider.EssentialsTask scheduleGlobalDelayedTask(Runnable run, long delay) {
+        return schedulingProvider.runGlobalLocationalTask(run, delay);
     }
 
     @Override
@@ -1546,6 +1557,10 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     @Override
     public PluginCommand getPluginCommand(final String cmd) {
         return this.getCommand(cmd);
+    }
+
+    public BukkitAudiences getBukkitAudience() {
+        return bukkitAudience;
     }
 
     private AbstractItemDb getItemDbFromConfig() {

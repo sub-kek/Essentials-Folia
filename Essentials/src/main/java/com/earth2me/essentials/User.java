@@ -23,7 +23,6 @@ import net.ess3.api.events.MuteStatusChangeEvent;
 import net.ess3.api.events.UserBalanceUpdateEvent;
 import net.essentialsx.api.v2.events.TransactionEvent;
 import net.essentialsx.api.v2.services.mail.MailSender;
-import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Location;
@@ -1052,7 +1051,7 @@ public class User extends UserData implements Comparable<User>, IMessageRecipien
 
     @Override
     public void sendComponent(ComponentLike component) {
-        BukkitComponentSerializer.gson().serialize(component.asComponent());
+        ess.getBukkitAudience().player(base).sendMessage(component);
     }
 
     @Override

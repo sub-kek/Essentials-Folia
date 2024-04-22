@@ -3,7 +3,7 @@ package com.earth2me.essentials;
 import com.earth2me.essentials.messaging.IMessageRecipient;
 import com.earth2me.essentials.messaging.SimpleMessageRecipient;
 import com.earth2me.essentials.utils.AdventureUtil;
-import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -73,9 +73,10 @@ public final class Console implements IMessageRecipient {
             return;
         }
 
+        final Audience consoleAudience = ((Essentials) ess).getBukkitAudience().sender(getCommandSender());
         final Component component = AdventureUtil.miniMessage()
-                .deserialize(translation);
-        getCommandSender().sendMessage(BukkitComponentSerializer.gson().serialize(component));
+            .deserialize(translation);
+        consoleAudience.sendMessage(component);
     }
 
     @Override

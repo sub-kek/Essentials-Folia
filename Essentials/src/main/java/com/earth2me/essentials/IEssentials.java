@@ -132,7 +132,7 @@ public interface IEssentials extends Plugin {
         scheduleGlobalDelayedTask(run, 1);
     }
 
-    void scheduleGlobalDelayedTask(Runnable run, long delay);
+    SchedulingProvider.EssentialsTask scheduleGlobalDelayedTask(Runnable run, long delay);
 
     SchedulingProvider.EssentialsTask scheduleGlobalRepeatingTask(Runnable run, long delay, long period);
 

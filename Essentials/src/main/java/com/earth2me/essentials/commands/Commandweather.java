@@ -10,8 +10,6 @@ import org.bukkit.World;
 import java.util.Collections;
 import java.util.List;
 
-import static com.earth2me.essentials.I18n.tlLiteral;
-
 public class Commandweather extends EssentialsCommand {
     public Commandweather() {
         super("weather");
@@ -38,7 +36,7 @@ public class Commandweather extends EssentialsCommand {
             if (args.length > 1) {
                 world.setStorm(isStorm);
                 world.setWeatherDuration(Integer.parseInt(args[1]) * 20);
-                user.sendMessage(isStorm ? tlLiteral("weatherStormFor", world.getName(), args[1]) : tlLiteral("weatherSunFor", world.getName(), args[1]));
+                user.sendTl(isStorm ? "weatherStormFor" : "weatherSunFor", world.getName(), args[1]);
                 return;
             }
             world.setStorm(isStorm);
@@ -62,7 +60,7 @@ public class Commandweather extends EssentialsCommand {
             if (args.length > 2) {
                 world.setStorm(isStorm);
                 world.setWeatherDuration(Integer.parseInt(args[2]) * 20);
-                sender.sendMessage(isStorm ? tlLiteral("weatherStormFor", world.getName(), args[2]) : tlLiteral("weatherSunFor", world.getName(), args[2]));
+                sender.sendTl(isStorm ? "weatherStormFor" : "weatherSunFor", world.getName(), args[2]);
                 return;
             }
             world.setStorm(isStorm);

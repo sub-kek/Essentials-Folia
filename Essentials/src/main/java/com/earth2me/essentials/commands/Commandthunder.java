@@ -8,8 +8,6 @@ import org.bukkit.World;
 import java.util.Collections;
 import java.util.List;
 
-import static com.earth2me.essentials.I18n.tlLiteral;
-
 public class Commandthunder extends EssentialsCommand {
     public Commandthunder() {
         super("thunder");
@@ -26,14 +24,13 @@ public class Commandthunder extends EssentialsCommand {
             final boolean setThunder = args[0].equalsIgnoreCase("true");
             if (args.length == 1) {
                 world.setThundering(setThunder);
-                user.sendMessage(tlLiteral("thunder", setThunder ? tlLiteral("enabled") : tlLiteral("disabled")));
+                user.sendTl("thunder", setThunder ? user.playerTl("enabled") : user.playerTl("disabled"));
                 return;
             }
 
             world.setThundering(setThunder);
             world.setThunderDuration(Integer.parseInt(args[1]) * 20);
-            user.sendMessage(tlLiteral("thunderDuration", setThunder ? tlLiteral("enabled") : tlLiteral("disabled"), Integer.parseInt(args[1])));
-
+            user.sendTl("thunderDuration", setThunder ? user.playerTl("enabled") : user.playerTl("disabled"), Integer.parseInt(args[1]));
         });
     }
 
