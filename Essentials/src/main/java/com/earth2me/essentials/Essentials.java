@@ -64,6 +64,7 @@ import net.ess3.provider.BiomeKeyProvider;
 import net.ess3.provider.ContainerProvider;
 import net.ess3.provider.DamageEventProvider;
 import net.ess3.provider.FormattedCommandAliasProvider;
+import net.ess3.provider.InventoryViewProvider;
 import net.ess3.provider.ItemUnbreakableProvider;
 import net.ess3.provider.KnownCommandsProvider;
 import net.ess3.provider.MaterialTagProvider;
@@ -81,6 +82,7 @@ import net.ess3.provider.SpawnerItemProvider;
 import net.ess3.provider.SyncCommandsProvider;
 import net.ess3.provider.WorldInfoProvider;
 import net.ess3.provider.providers.BaseBannerDataProvider;
+import net.ess3.provider.providers.BaseInventoryViewProvider;
 import net.ess3.provider.providers.BaseLoggerProvider;
 import net.ess3.provider.providers.BlockMetaSpawnerItemProvider;
 import net.ess3.provider.providers.BukkitMaterialTagProvider;
@@ -91,6 +93,7 @@ import net.ess3.provider.providers.FlatSpawnEggProvider;
 import net.ess3.provider.providers.LegacyBannerDataProvider;
 import net.ess3.provider.providers.LegacyDamageEventProvider;
 import net.ess3.provider.providers.FoliaSchedulingProvider;
+import net.ess3.provider.providers.LegacyInventoryViewProvider;
 import net.ess3.provider.providers.LegacyItemUnbreakableProvider;
 import net.ess3.provider.providers.LegacyPlayerLocaleProvider;
 import net.ess3.provider.providers.LegacyPotionMetaProvider;
@@ -135,6 +138,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -211,7 +215,11 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     private transient SignDataProvider signDataProvider;
     private transient DamageEventProvider damageEventProvider;
     private transient BiomeKeyProvider biomeKeyProvider;
+<<<<<<< HEAD
     private transient SchedulingProvider schedulingProvider;
+=======
+    private transient InventoryViewProvider inventoryViewProvider;
+>>>>>>> 8b08a8f2c8e2e6a9afa1d17a8176b9d26e385d99
     private transient Kits kits;
     private transient RandomTeleport randomTeleport;
     private transient UpdateChecker updateChecker;
@@ -515,6 +523,12 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
                 damageEventProvider = new ModernDamageEventProvider();
             } else {
                 damageEventProvider = new LegacyDamageEventProvider();
+            }
+
+            if (VersionUtil.getServerBukkitVersion().isHigherThanOrEqualTo(VersionUtil.v1_21_R01)) {
+                inventoryViewProvider = new BaseInventoryViewProvider();
+            } else {
+                inventoryViewProvider = new LegacyInventoryViewProvider();
             }
 
             if (PaperLib.isPaper() && VersionUtil.getServerBukkitVersion().isHigherThanOrEqualTo(VersionUtil.v1_19_4_R01)) {
@@ -942,12 +956,14 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     public void cleanupOpenInventories() {
         for (final User user : getOnlineUsers()) {
             if (user.isRecipeSee()) {
-                user.getBase().getOpenInventory().getTopInventory().clear();
-                user.getBase().getOpenInventory().close();
+                final InventoryView view = user.getBase().getOpenInventory();
+
+                inventoryViewProvider.getTopInventory(view).clear();
+                inventoryViewProvider.close(view);
                 user.setRecipeSee(false);
             }
             if (user.isInvSee() || user.isEnderSee()) {
-                user.getBase().getOpenInventory().close();
+                inventoryViewProvider.close(user.getBase().getOpenInventory());
                 user.setInvSee(false);
                 user.setEnderSee(false);
             }
@@ -1494,6 +1510,11 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     @Override
     public BannerDataProvider getBannerDataProvider() {
         return bannerDataProvider;
+    }
+
+    @Override
+    public InventoryViewProvider getInventoryViewProvider() {
+        return inventoryViewProvider;
     }
 
     @Override
