@@ -215,11 +215,8 @@ public class Essentials extends JavaPlugin implements net.ess3.api.IEssentials {
     private transient SignDataProvider signDataProvider;
     private transient DamageEventProvider damageEventProvider;
     private transient BiomeKeyProvider biomeKeyProvider;
-<<<<<<< HEAD
     private transient SchedulingProvider schedulingProvider;
-=======
     private transient InventoryViewProvider inventoryViewProvider;
->>>>>>> 8b08a8f2c8e2e6a9afa1d17a8176b9d26e385d99
     private transient Kits kits;
     private transient RandomTeleport randomTeleport;
     private transient UpdateChecker updateChecker;
